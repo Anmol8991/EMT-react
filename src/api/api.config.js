@@ -1,5 +1,6 @@
 import axios from "axios";
 // Define a custom type that extends AxiosRequestConfig with 'contentType' property
+console.log("base_url : ", import.meta.env.VITE_CUSTOM_BASE_URL)
 const fetchApi = axios.create({
     baseURL: import.meta.env.VITE_CUSTOM_BASE_URL,
 });
