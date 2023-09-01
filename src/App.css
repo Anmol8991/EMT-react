@@ -1,0 +1,21 @@
+/* Overriding datepicker field to become a block element instead of inline-block */
+.react-datepicker-wrapper {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+.user-avatar-container {
+  display: inline-block;
+  width: 30px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  overflow: hidden;
+  border-radius: 50%; /* To create a circular container */
+  margin-left: 8px; /* Add spacing between the image and the name */
+}
+
+.user-avatar {
+  width: 100%;
+  height: auto;
+}
+
