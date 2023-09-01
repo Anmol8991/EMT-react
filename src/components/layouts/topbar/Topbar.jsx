@@ -16,7 +16,7 @@ const Topbar = ({ handleToggle }) => {
     try {
       const response = await apiLogout();
       console.log(
-        "Response Data to logout request in Topbar Component: ",
+        "Response to logout request in Topbar Component: ",
         response?.data?.data
       );
     } catch (error) {
