@@ -8,47 +8,11 @@ import {
   apiClockEvents,
 } from "../../../../api/user.api.js";
 
-const Timer = () => {
-  const [clockStatus, setClockStatus] = useState("clock-out");
-  const [clockLoader, setClockLoader] = useState(false);
+// TODO: hardcoded value to determine whether employee is present or not 
+const useTime = ({ clockStatus, currentTimerId, setClockLoader }) => {
   const [time, setTime] = useState(0);
   const { signOut } = useAuth();
-  const currentTimerId = useRef(null);
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchStatus = async () => {
-      try {
-        setClockLoader(true);
-        const response = await apiGetClockStatus({ signal: controller.signal });
-        console.log(
-          "Last clockStatus in Db: ",
-          response?.data?.data?.clockStatus
-        );
-        // Change Status
-        setClockStatus(response?.data?.data?.clockStatus);
-      } catch (error) {
-        if (error?.name !== "CanceledError") {
-          console.log("Error in useEffect hook in Timer Component: ", error);
-          if (error?.response?.data?.status === 401) {
-            signOut();
-          }
-        } else {
-          console.log("Request Aborted!");
-        }
-      } finally {
-        // Stop Loader
-        setClockLoader(false);
-      }
-    };
-
-    fetchStatus();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
   useEffect(() => {
     const controller = new AbortController();
     // {signal: controller.signal}
@@ -121,12 +85,50 @@ const Timer = () => {
     };
   }, [clockStatus, currentTimerId]);
 
-  const refreshClock = () => {
-    setTime((prevTime) => {
-      // localStorage.setItem("timer", prevTime + 1);
-      return prevTime + 1;
-    });
-  };
+  const refreshClock = () => setTime((prevTime) =>  prevTime + 1);
+
+  return time;
+};
+const Timer = () => {
+  const [clockStatus, setClockStatus] = useState("clock-out");
+  const [clockLoader, setClockLoader] = useState(false);
+  const { signOut } = useAuth();
+  const currentTimerId = useRef(null);
+  const time = useTime({ clockStatus, currentTimerId, setClockLoader });
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchStatus = async () => {
+      try {
+        setClockLoader(true);
+        const response = await apiGetClockStatus({ signal: controller.signal });
+        console.log(
+          "Last clockStatus in Db: ",
+          response?.data?.data?.clockStatus
+        );
+        // Change Status
+        setClockStatus(response?.data?.data?.clockStatus);
+      } catch (error) {
+        if (error?.name !== "CanceledError") {
+          console.log("Error in useEffect hook in Timer Component: ", error);
+          if (error?.response?.data?.status === 401) {
+            signOut();
+          }
+        } else {
+          console.log("Request Aborted!");
+        }
+      } finally {
+        // Stop Loader
+        setClockLoader(false);
+      }
+    };
+
+    fetchStatus();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   const handleClock = async (event) => {
     event.preventDefault();
@@ -196,23 +198,15 @@ const Timer = () => {
                       Today's Status: {attendanceStatus(time)} 
                     </li>
                   </ol>
-                </>
-              )}
-            </div>
-            <div className="col-12 align-self-center">
-              {clockLoader ? (
-                <div className="spinner-border" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              ) : (
-                <button
+                  <button
                   className={`btn ${
                     clockStatus === "clock-in" ? "btn-danger" : "btn-primary"
-                  } w-75`}
+                  } w-75 mt-2`}
                   onClick={handleClock}
                 >
                   {clockStatus === "clock-in" ? "Clock-Out" : "Clock-In"}
                 </button>
+                </>
               )}
             </div>
           </div>
