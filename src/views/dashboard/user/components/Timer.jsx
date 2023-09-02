@@ -65,24 +65,20 @@ const Timer = () => {
           if(response?.data?.data?.entryTime !== null){
             const entryTimeParts = response?.data?.data?.entryTime.split(":");
             const currentUTC = new Date(); // Get the current date and time in UTC
-
             // Construct the entryTime object in UTC/GMT timezone
-            const entryTime = new Date(
-              currentUTC.getUTCFullYear(),
-              currentUTC.getUTCMonth(),
-              currentUTC.getUTCDate(),
-              parseInt(entryTimeParts[0]),
-              parseInt(entryTimeParts[1]),
-              parseInt(entryTimeParts[2])
-            );
+            const entryTime = new Date(currentUTC.getUTCFullYear(),currentUTC.getUTCMonth(), currentUTC.getUTCDate(),);
+            entryTime.setHours(parseInt(entryTimeParts[0]));
+            entryTime.setMinutes(parseInt(entryTimeParts[1]));
+            entryTime.setSeconds(parseInt(entryTimeParts[2]));
 
-            console.log("Entry Time (GMT): ", entryTime.toUTCString());
+            console.log("Entry Time (GMT): ", entryTime);
+            console.log("Current Time (GMT): ", currentUTC.toUTCString());
 
             // Calculate the time difference in seconds
             const entryTimeInSeconds =
-              entryTime.getUTCHours() * 3600 +
-              entryTime.getUTCMinutes() * 60 +
-              entryTime.getUTCSeconds();
+              entryTime.getHours() * 3600 +
+              entryTime.getMinutes() * 60 +
+              entryTime.getSeconds();
 
             console.log("Entry Time in Seconds (GMT): ", entryTimeInSeconds);
 
@@ -95,7 +91,6 @@ const Timer = () => {
 
             timeDifferenceInSeconds = currentTimeInSeconds - entryTimeInSeconds;
             console.log("Time Difference in Seconds (GMT): ", timeDifferenceInSeconds);
-
           }
           console.log("Total Time in seconds: ",totalTime);
           setTime(totalTime + timeDifferenceInSeconds);
