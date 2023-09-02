@@ -71,7 +71,7 @@ const Timer = () => {
               currentUTC.getUTCFullYear(),
               currentUTC.getUTCMonth(),
               currentUTC.getUTCDate(),
-              parseInt(entryTimeParts[0]) - 4, // Subtract 4 hours for GMT
+              parseInt(entryTimeParts[0]),
               parseInt(entryTimeParts[1]),
               parseInt(entryTimeParts[2])
             );
