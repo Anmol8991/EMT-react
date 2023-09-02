@@ -93,7 +93,7 @@ const Timer = () => {
 
             console.log("Current Time in Seconds (GMT): ", currentTimeInSeconds);
 
-            const timeDifferenceInSeconds = currentTimeInSeconds - entryTimeInSeconds;
+            timeDifferenceInSeconds = currentTimeInSeconds - entryTimeInSeconds;
             console.log("Time Difference in Seconds (GMT): ", timeDifferenceInSeconds);
 
           }
