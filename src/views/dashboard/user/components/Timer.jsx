@@ -8,10 +8,47 @@ import {
   apiClockEvents,
 } from "../../../../api/user.api.js";
 
-const useTime = ({ clockStatus, currentTimerId, setClockLoader }) => {
+const Timer = () => {
+  const [clockStatus, setClockStatus] = useState("clock-out");
+  const [clockLoader, setClockLoader] = useState(false);
   const [time, setTime] = useState(0);
   const { signOut } = useAuth();
+  const currentTimerId = useRef(null);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchStatus = async () => {
+      try {
+        setClockLoader(true);
+        const response = await apiGetClockStatus({ signal: controller.signal });
+        console.log(
+          "Last clockStatus in Db: ",
+          response?.data?.data?.clockStatus
+        );
+        // Change Status
+        setClockStatus(response?.data?.data?.clockStatus);
+      } catch (error) {
+        if (error?.name !== "CanceledError") {
+          console.log("Error in useEffect hook in Timer Component: ", error);
+          if (error?.response?.data?.status === 401) {
+            signOut();
+          }
+        } else {
+          console.log("Request Aborted!");
+        }
+      } finally {
+        // Stop Loader
+        setClockLoader(false);
+      }
+    };
+
+    fetchStatus();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
   useEffect(() => {
     const controller = new AbortController();
     // {signal: controller.signal}
@@ -27,33 +64,37 @@ const useTime = ({ clockStatus, currentTimerId, setClockLoader }) => {
         if (clockStatus === "clock-in") {
           if(response?.data?.data?.entryTime !== null){
             const entryTimeParts = response?.data?.data?.entryTime.split(":");
-          const entryTime = new Date();
-          let hours;
-          if(parseInt(entryTimeParts[0])-4 >= 0 ){
-            hours = parseInt(entryTimeParts[0])-4;
-          }else{
-            hours = 24 + parseInt(entryTimeParts[0])-4
-          }
-          entryTime.setHours(hours);
-          entryTime.setMinutes(parseInt(entryTimeParts[1]));
-          entryTime.setSeconds(parseInt(entryTimeParts[2]));
-          console.log("Entry Time: ", entryTime);
-          const entryTimeInSeconds =
-            entryTime.getHours() * 3600 +
-            entryTime.getMinutes() * 60 +
-            entryTime.getSeconds();
-          console.log("entryTimeInSeconds: ", entryTimeInSeconds);
+            const currentUTC = new Date(); // Get the current date and time in UTC
 
-          const currentTime = new Date();
-          console.log("Current Time: ", currentTime);
-          const currentTimeInSeconds =
-            currentTime.getHours() * 3600 +
-            currentTime.getMinutes() * 60 +
-            currentTime.getSeconds();
-          console.log("currentTimeInSeconds: ", currentTimeInSeconds);
+            // Construct the entryTime object in UTC/GMT timezone
+            const entryTime = new Date(
+              currentUTC.getUTCFullYear(),
+              currentUTC.getUTCMonth(),
+              currentUTC.getUTCDate(),
+              parseInt(entryTimeParts[0]) - 4, // Subtract 4 hours for GMT
+              parseInt(entryTimeParts[1]),
+              parseInt(entryTimeParts[2])
+            );
 
-          timeDifferenceInSeconds = currentTimeInSeconds - entryTimeInSeconds;
-          console.log("timeDifferenceInSeconds: ", timeDifferenceInSeconds);
+            console.log("Entry Time (GMT): ", entryTime.toUTCString());
+
+            // Calculate the time difference in seconds
+            const entryTimeInSeconds =
+              entryTime.getUTCHours() * 3600 +
+              entryTime.getUTCMinutes() * 60 +
+              entryTime.getUTCSeconds();
+
+            console.log("Entry Time in Seconds (GMT): ", entryTimeInSeconds);
+
+            const currentTimeInSeconds =
+              currentUTC.getUTCHours() * 3600 +
+              currentUTC.getUTCMinutes() * 60 +
+              currentUTC.getUTCSeconds();
+
+            console.log("Current Time in Seconds (GMT): ", currentTimeInSeconds);
+
+            const timeDifferenceInSeconds = currentTimeInSeconds - entryTimeInSeconds;
+            console.log("Time Difference in Seconds (GMT): ", timeDifferenceInSeconds);
 
           }
           setTime(totalTime + timeDifferenceInSeconds);
@@ -90,51 +131,6 @@ const useTime = ({ clockStatus, currentTimerId, setClockLoader }) => {
       return prevTime + 1;
     });
   };
-
-  return time;
-};
-
-const Timer = () => {
-  const [clockStatus, setClockStatus] = useState("clock-out");
-  const [clockLoader, setClockLoader] = useState(false);
-  const { signOut } = useAuth();
-  const currentTimerId = useRef(null);
-  const time = useTime({ clockStatus, currentTimerId, setClockLoader });
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchStatus = async () => {
-      try {
-        setClockLoader(true);
-        const response = await apiGetClockStatus({ signal: controller.signal });
-        console.log(
-          "Last clockStatus in Db: ",
-          response?.data?.data?.clockStatus
-        );
-        // Change Status
-        setClockStatus(response?.data?.data?.clockStatus);
-      } catch (error) {
-        if (error?.name !== "CanceledError") {
-          console.log("Error in useEffect hook in Timer Component: ", error);
-          if (error?.response?.data?.status === 401) {
-            signOut();
-          }
-        } else {
-          console.log("Request Aborted!");
-        }
-      } finally {
-        // Stop Loader
-        setClockLoader(false);
-      }
-    };
-
-    fetchStatus();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
 
   const handleClock = async (event) => {
     event.preventDefault();
