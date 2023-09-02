@@ -95,7 +95,6 @@ const Timer = () => {
 
             const timeDifferenceInSeconds = currentTimeInSeconds - entryTimeInSeconds;
             console.log("Time Difference in Seconds (GMT): ", timeDifferenceInSeconds);
-
           }
           setTime(totalTime + timeDifferenceInSeconds);
           currentTimerId.current = setInterval(refreshClock, 1000);
