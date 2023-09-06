@@ -36,10 +36,15 @@ function App() {
         }
       });
     }
-    return () => {
+    const handleTabClose = () => {
       localStorage.clear()
       setUser(null)
     }
+    
+    window.addEventListener('beforeunload', handleTabClose);
+    return () => {
+        window.removeEventListener('beforeunload', handleTabClose);
+    };
   },[])
 
   return (
