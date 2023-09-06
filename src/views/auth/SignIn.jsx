@@ -9,43 +9,15 @@ import * as jose from "jose";
 import Loading from "../../components/loader/Loading";
 import useAuth from "../../hooks/useAuth.js";
 import { GoogleLogin } from "@react-oauth/google";
-import Swal from "sweetalert2";
 
 
-const PORT = 5001;
 
 const SignIn = () => {
   const { signIn } = useAuth();
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [firstTimeAlert, setFirstTimeAlert] = useState(true)
-
-  useEffect(()=>{
-    if(firstTimeAlert){
-      Swal.fire({
-        title: "Login Account Details",
-        html: `
-            <div>
-              <p>Admin </p>
-              <p>Email: john@example.com</p>
-              <p>Password: password123</p>
-              <p>Employee</p>
-              <p>Email: anmolarora98@gmail.com </p>
-              <p>Password: Anmol#123</p>
-            </div>`,
-        icon: "success",
-        confirmButtonText: "OK",
-        showCancelButton: false,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          console.log("Alert Read!");
-          setFirstTimeAlert(false)
-        }
-      });
-    }
-    
-  },[])
+  
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
