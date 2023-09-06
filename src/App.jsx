@@ -7,8 +7,10 @@ import { useState, useEffect } from "react";
 import Layouts from './components/layouts/Layouts';
 import './App.css'
 import Swal from "sweetalert2";
+import useAuth from "./hooks/useAuth";
 
 function App() {
+  const { signOut } = useAuth();
   const [firstTimeAlert, setFirstTimeAlert] = useState(true)
 
   useEffect(()=>{
@@ -34,7 +36,9 @@ function App() {
         }
       });
     }
-    
+   return () => {
+    signOut();
+   } 
   },[])
 
   return (
