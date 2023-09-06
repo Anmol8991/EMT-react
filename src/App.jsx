@@ -7,10 +7,10 @@ import { useState, useEffect } from "react";
 import Layouts from './components/layouts/Layouts';
 import './App.css'
 import Swal from "sweetalert2";
-
+import { useUserContext } from "./hooks/useUserContext";
 
 function App() {
-
+  const { setUser } = useUserContext()
   const [firstTimeAlert, setFirstTimeAlert] = useState(true)
 
   useEffect(()=>{
@@ -35,6 +35,10 @@ function App() {
           setFirstTimeAlert(false)
         }
       });
+    }
+    return () => {
+      localStorage.clear()
+      setUser(null)
     }
   },[])
 
