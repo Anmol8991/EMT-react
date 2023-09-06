@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -9,6 +9,8 @@ import * as jose from "jose";
 import Loading from "../../components/loader/Loading";
 import useAuth from "../../hooks/useAuth.js";
 import { GoogleLogin } from "@react-oauth/google";
+import Swal from "sweetalert2";
+
 
 const PORT = 5001;
 
@@ -18,6 +20,28 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  useEffect(()=>{
+    Swal.fire({
+      title: "Added Successfully!",
+      html: `
+          <div>
+            <p><strong>Initial Login Account Details:</strong></p>
+            <p>Admin: </p>
+            <p>Email: john@example.com</p>
+            <p>Password: password123</p>
+            <p>Employee:</p>
+            <p>Email:anmolarora98@gmail.com </p>
+            <p>Password: Anmol#123</p>
+          </div>`,
+      icon: "success",
+      confirmButtonText: "OK",
+      showCancelButton: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("Alert Read!");
+      }
+    });
+  },[])
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email")
