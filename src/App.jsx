@@ -23,8 +23,8 @@ function App() {
               <p>Email: john@example.com</p>
               <p>Password: password123</p>
               <p><strong>Employee</strong></p>
-              <p>Email: anmolarora98@gmail.com </p>
-              <p>Password: Anmol#123</p>
+              <p>Email: employee@gmail.com </p>
+              <p>Password: Employee#123</p>
             </div>`,
         icon: "success",
         confirmButtonText: "OK",
