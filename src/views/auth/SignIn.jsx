@@ -22,15 +22,14 @@ const SignIn = () => {
 
   useEffect(()=>{
     Swal.fire({
-      title: "Added Successfully!",
+      title: "Login Account Details",
       html: `
           <div>
-            <p><strong>Initial Login Account Details:</strong></p>
-            <p>Admin: </p>
+            <p>Admin </p>
             <p>Email: john@example.com</p>
             <p>Password: password123</p>
-            <p>Employee:</p>
-            <p>Email:anmolarora98@gmail.com </p>
+            <p>Employee</p>
+            <p>Email: anmolarora98@gmail.com </p>
             <p>Password: Anmol#123</p>
           </div>`,
       icon: "success",
