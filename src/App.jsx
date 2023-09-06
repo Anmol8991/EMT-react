@@ -17,10 +17,10 @@ function App() {
         title: "Login Account Details",
         html: `
             <div>
-              <p>Admin </p>
+              <p><strong>Admin</strong> </p>
               <p>Email: john@example.com</p>
               <p>Password: password123</p>
-              <p>Employee</p>
+              <p><strong>Employee</strong></p>
               <p>Email: anmolarora98@gmail.com </p>
               <p>Password: Anmol#123</p>
             </div>`,
